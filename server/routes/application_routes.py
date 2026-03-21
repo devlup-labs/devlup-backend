@@ -1,45 +1,38 @@
-from fastapi import APIRouter
-from bson import ObjectId
-from server.database import application_collection
-from server.schemas.application_schema import Application
+from fastapi import APIRouter, status, Depends
+from server.schemas.application_schema import ApplicationCreate, ApplicationUpdate
+from server.models.application_model import ApplicationModel
+from server.auth import get_admin_user
+from server.controllers.application_controller import (
+    get_applications_controller,
+    create_application_controller,
+    get_application_controller,
+    update_application_controller,
+    delete_application_controller
+)
 
 router = APIRouter()
 
-
-@router.get("/applications")
+# Get all applications
+@router.get("/applications", response_model=list[ApplicationModel], dependencies=[Depends(get_admin_user)])
 async def get_applications():
+    return await get_applications_controller()
 
-    applications = []
+# Create a new application
+@router.post("/applications", response_model=ApplicationModel, status_code=status.HTTP_201_CREATED)
+async def create_application(application: ApplicationCreate):
+    return await create_application_controller(application)
 
-    cursor = application_collection.find()
-
-    async for a in cursor:
-        a["_id"] = str(a["_id"])
-        applications.append(a)
-
-    return applications
-
-
-@router.post("/applications")
-async def create_application(application: Application):
-
-    result = await application_collection.insert_one(application.dict())
-
-    return {"application_id": str(result.inserted_id)}
-
-
-@router.get("/applications/{application_id}")
+# Get an application by ID
+@router.get("/applications/{application_id}", response_model=ApplicationModel)
 async def get_application(application_id: str):
+    return await get_application_controller(application_id)
 
-    app = await application_collection.find_one({"_id": ObjectId(application_id)})
-    app["_id"] = str(app["_id"])
+# Update an application by ID
+@router.put("/applications/{application_id}", response_model=ApplicationModel)
+async def update_application(application_id: str, application_update: ApplicationUpdate):
+    return await update_application_controller(application_id, application_update)
 
-    return app
-
-
-@router.delete("/applications/{application_id}")
+# Delete an application by ID
+@router.delete("/applications/{application_id}", status_code=status.HTTP_200_OK, dependencies=[Depends(get_admin_user)])
 async def delete_application(application_id: str):
-
-    await application_collection.delete_one({"_id": ObjectId(application_id)})
-
-    return {"message": "deleted"}
+    return await delete_application_controller(application_id)
