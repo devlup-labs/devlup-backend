@@ -8,6 +8,10 @@ class ApplicationBase(BaseModel):
     mentee_github_id: str
     mentee_email_id: str
     mentee_proposal_url: str
+    project_name_1: str
+    project_name_2: Optional[str] = None
+    status_1: str = "pending"
+    status_2: str = "pending"
     created_at: Optional[datetime] = None
 
 class ApplicationCreate(ApplicationBase):
@@ -19,4 +23,8 @@ class ApplicationUpdate(BaseModel):
     mentee_github_id: Optional[str] = None
     mentee_email_id: Optional[str] = None
     mentee_proposal_url: Optional[str] = None
+    project_name_1: Optional[str] = None
+    project_name_2: Optional[str] = None
+    status_1: Optional[str] = None
+    status_2: Optional[str] = None
     created_at: Optional[datetime] = None

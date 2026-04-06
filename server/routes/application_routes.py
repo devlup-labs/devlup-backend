@@ -28,7 +28,7 @@ async def get_application(application_id: str):
     return await get_application_controller(application_id)
 
 # Update an application by ID
-@router.put("/applications/{application_id}", response_model=ApplicationModel)
+@router.put("/applications/{application_id}", response_model=ApplicationModel, dependencies=[Depends(get_admin_user)])
 async def update_application(application_id: str, application_update: ApplicationUpdate):
     return await update_application_controller(application_id, application_update)
 
