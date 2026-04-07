@@ -14,7 +14,7 @@ db = client[DB_NAME]
 
 project_collection = db["projects"]
 mentor_collection = db["mentors"]
-# timeline_collection = db["timeline"]
+timeline_collection = db["timeline"]
 application_collection = db["applications"]
 # preference_collection = db["application_preferences"]
 stats_collection = db["stats"]
