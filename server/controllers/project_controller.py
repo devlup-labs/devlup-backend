@@ -23,10 +23,14 @@ async def sync_project_mentors(project: dict):
             m_email = m.get("email") if isinstance(m, dict) else getattr(m, "email", "")
             m_linkedin = m.get("linkedin") if isinstance(m, dict) else getattr(m, "linkedin", "")
             m_role = m.get("role") if isinstance(m, dict) else getattr(m, "role", "Project Mentor")
+            m_image_url = m.get("image_url") if isinstance(m, dict) else getattr(m, "image_url", None)
             
-            # Generate avatar URL using initials (matching existing mentors)
-            safe_name = urllib.parse.quote_plus(m_name)
-            avatar_url = f"https://api.dicebear.com/7.x/initials/svg?seed={safe_name}"
+            # Use uploaded image if provided, otherwise generate avatar from initials
+            if m_image_url:
+                avatar_url = m_image_url
+            else:
+                safe_name = urllib.parse.quote_plus(m_name)
+                avatar_url = f"https://api.dicebear.com/7.x/initials/svg?seed={safe_name}"
             
             new_mentor = {
                 "name": m_name,

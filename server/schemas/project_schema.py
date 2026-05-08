@@ -7,6 +7,7 @@ class MentorBase(BaseModel):
     email: Optional[str] = None
     linkedin: Optional[str] = None
     github: Optional[str] = None
+    image_url: Optional[str] = None
 
 class ProjectBase(BaseModel):
     project_title: str = Field(...)
