@@ -3,8 +3,42 @@ from typing import List, Optional
 from bson import ObjectId
 from datetime import datetime, timezone
 
-from server.database import project_collection
+from server.database import project_collection, mentor_collection
 from server.schemas.project_schema import ProjectCreate, ProjectUpdate
+import urllib.parse
+
+async def sync_project_mentors(project: dict):
+    mentors = project.get("mentors", [])
+    year = project.get("year", datetime.now().year)
+    for m in mentors:
+        # Check if m is a dict or a MentorBase object
+        m_name = m.get("name") if isinstance(m, dict) else getattr(m, "name", None)
+        if not m_name:
+            continue
+            
+        # Avoid duplication by name and year
+        existing = await mentor_collection.find_one({"name": m_name, "year": year})
+        if not existing:
+            m_github = m.get("github") if isinstance(m, dict) else getattr(m, "github", "")
+            m_email = m.get("email") if isinstance(m, dict) else getattr(m, "email", "")
+            m_linkedin = m.get("linkedin") if isinstance(m, dict) else getattr(m, "linkedin", "")
+            m_role = m.get("role") if isinstance(m, dict) else getattr(m, "role", "Project Mentor")
+            
+            # Generate avatar URL using initials (matching existing mentors)
+            safe_name = urllib.parse.quote_plus(m_name)
+            avatar_url = f"https://api.dicebear.com/7.x/initials/svg?seed={safe_name}"
+            
+            new_mentor = {
+                "name": m_name,
+                "github": m_github or "",
+                "email": m_email or "",
+                "description": "DevlUp Project Mentor",
+                "linkedin": m_linkedin or "",
+                "image": avatar_url,
+                "role": m_role or "Project Mentor",
+                "year": year
+            }
+            await mentor_collection.insert_one(new_mentor)
 
 async def get_all_projects(status: Optional[str] = None, has_issues: Optional[bool] = None, type: Optional[str] = None, year: Optional[int] = None, approval_status: Optional[str] = None):
     query = {}
@@ -79,6 +113,9 @@ async def update_existing_project(project_id: str, project_update: ProjectUpdate
         if update_result.modified_count == 1:
             updated_project = await project_collection.find_one({"_id": ObjectId(project_id)})
             if updated_project:
+                # Sync mentors if project is accepted
+                if updated_project.get("approval_status") == "accepted":
+                    await sync_project_mentors(updated_project)
                 return updated_project
                 
     # If no modifications were made, return the existing project or 404
