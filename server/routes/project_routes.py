@@ -13,10 +13,14 @@ async def get_projects(
     status: Optional[str] = Query(None),
     has_issues: Optional[bool] = Query(None),
     type: Optional[str] = Query(None),
-    year: Optional[int] = Query(None)
+    year: Optional[int] = Query(None),
+    approval_status: Optional[str] = Query(None)
 ):
-    return await project_controller.get_all_projects(status, has_issues, type, year)
+    return await project_controller.get_all_projects(status, has_issues, type, year, approval_status)
 
+@router.post("/submit", response_model=ProjectModel, status_code=status.HTTP_201_CREATED)
+async def submit_project(project: ProjectCreate):
+    return await project_controller.submit_public_project(project)
 
 @router.post("", response_model=ProjectModel, status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_admin_user)])
 async def create_project(project: ProjectCreate):

@@ -16,7 +16,7 @@ async def get_applications_controller():
     return applications
 
 async def create_application_controller(application: ApplicationCreate):
-    app_dict = application.dict()
+    app_dict = application.model_dump()
     app_dict["created_at"] = datetime.utcnow()
     
     result = await application_collection.insert_one(app_dict)
@@ -43,8 +43,7 @@ async def get_application_controller(application_id: str):
 async def update_application_controller(application_id: str, application_update: ApplicationUpdate):
     if not ObjectId.is_valid(application_id):
         raise HTTPException(status_code=400, detail="Invalid application ID")
-        
-    update_data = {k: v for k, v in application_update.dict().items() if v is not None}
+    update_data = {k: v for k, v in application_update.model_dump(exclude_unset=True).items() if v is not None}
     
     if len(update_data) >= 1:
         update_result = await application_collection.update_one(

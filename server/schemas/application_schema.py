@@ -1,14 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
 class ApplicationBase(BaseModel):
-    mentee_name: str
-    mentee_roll_number: str
-    mentee_github_id: str
-    mentee_email_id: str
-    mentee_proposal_url: str
-    project_name_1: str
+    model_config = ConfigDict(extra='allow')
+    
+    mentee_name: Optional[str] = None
+    mentee_roll_number: Optional[str] = None
+    mentee_github_id: Optional[str] = None
+    mentee_email_id: Optional[str] = None
+    mentee_proposal_url: Optional[str] = None
+    project_name_1: Optional[str] = None
     project_name_2: Optional[str] = None
     status_1: str = "pending"
     status_2: str = "pending"
@@ -18,6 +20,7 @@ class ApplicationCreate(ApplicationBase):
     pass
 
 class ApplicationUpdate(BaseModel):
+    model_config = ConfigDict(extra='allow')
     mentee_name: Optional[str] = None
     mentee_roll_number: Optional[str] = None
     mentee_github_id: Optional[str] = None

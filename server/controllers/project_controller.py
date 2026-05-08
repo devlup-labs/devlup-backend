@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from server.database import project_collection
 from server.schemas.project_schema import ProjectCreate, ProjectUpdate
 
-async def get_all_projects(status: Optional[str] = None, has_issues: Optional[bool] = None, type: Optional[str] = None, year: Optional[int] = None):
+async def get_all_projects(status: Optional[str] = None, has_issues: Optional[bool] = None, type: Optional[str] = None, year: Optional[int] = None, approval_status: Optional[str] = None):
     query = {}
     or_conditions = []
     
@@ -19,8 +19,18 @@ async def get_all_projects(status: Optional[str] = None, has_issues: Optional[bo
     if year is not None:
         or_conditions.append({"year": year})
         
-    if or_conditions:
-        query = {"$or": or_conditions}
+    if approval_status is not None:
+        if approval_status == "accepted":
+            status_query = {"$or": [{"approval_status": "accepted"}, {"approval_status": {"$exists": False}}]}
+        else:
+            status_query = {"approval_status": approval_status}
+            
+        if or_conditions:
+            query["$and"] = [{"$or": or_conditions}, status_query]
+        else:
+            query.update(status_query)
+    elif or_conditions:
+        query["$or"] = or_conditions
 
     projects_cursor = project_collection.find(query)
     projects = await projects_cursor.to_list(length=100)
@@ -30,6 +40,16 @@ async def create_new_project(project: ProjectCreate):
     project_dict = project.model_dump() if hasattr(project, "model_dump") else project.dict()
     project_dict["created_at"] = datetime.now(timezone.utc)
     project_dict["updated_at"] = datetime.now(timezone.utc)
+    result = await project_collection.insert_one(project_dict)
+    
+    created_project = await project_collection.find_one({"_id": result.inserted_id})
+    return created_project
+
+async def submit_public_project(project: ProjectCreate):
+    project_dict = project.model_dump() if hasattr(project, "model_dump") else project.dict()
+    project_dict["created_at"] = datetime.now(timezone.utc)
+    project_dict["updated_at"] = datetime.now(timezone.utc)
+    project_dict["approval_status"] = "pending"
     result = await project_collection.insert_one(project_dict)
     
     created_project = await project_collection.find_one({"_id": result.inserted_id})

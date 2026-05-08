@@ -16,8 +16,10 @@ class ProjectBase(BaseModel):
     year: int = Field(...)
     preview_link: Optional[str] = None
     github_repo_link: Optional[str] = None
-    docs: Optional[str] = None
+    docs: str = Field(default="")
+    is_docs_accessible: bool = Field(default=False)
     has_issues: bool = Field(default=False)
+    approval_status: str = Field(default="accepted", description="pending/accepted/rejected")
     
     # Extended fields for Google Sheets compatibility
     tech_stack: Optional[list[str]] = Field(default=[])
@@ -40,7 +42,9 @@ class ProjectUpdate(BaseModel):
     preview_link: Optional[str] = None
     github_repo_link: Optional[str] = None
     docs: Optional[str] = None
+    is_docs_accessible: Optional[bool] = None
     has_issues: Optional[bool] = None
+    approval_status: Optional[str] = None
     
     tech_stack: Optional[list[str]] = None
     mentors: Optional[list[MentorBase]] = None
