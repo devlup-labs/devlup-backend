@@ -65,7 +65,7 @@ This project uses the following technologies:
 Install all required Python packages:
 
 ```bash
-pip install fastapi uvicorn pymongo motor python-dotenv python-jose passlib[bcrypt] python-multipart requests "pydantic[email]" apscheduler
+pip install fastapi uvicorn pymongo motor python-dotenv python-jose passlib[bcrypt] python-multipart requests "pydantic[email]" apscheduler cloudinary
 ```
 extra:(if frontend_admin doesn't work)
 
@@ -74,6 +74,12 @@ pip uninstall bcrypt passlib -y
 pip install bcrypt==4.0.1
 pip install passlib==1.7.4
 ```
+- OR
+
+```bash
+pip install -r requirements.txt
+```
+
 ---
 
 ##  Environment Variables
