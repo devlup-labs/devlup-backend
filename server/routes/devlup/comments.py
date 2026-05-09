@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from datetime import datetime
-from database import db
-from models.devlup.blog_models import Comment
+from ...database import db
+from ...models.devlup.blog_models import Comment
 import uuid
 
 router = APIRouter(prefix="/comments", tags=["Comments"])

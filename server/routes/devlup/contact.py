@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.devlup.contact_models import ContactCreate, ContactResponse
-from database import db
+from ...models.devlup.contact_models import ContactCreate, ContactResponse
+from ...database import db
 from datetime import datetime
 import uuid
 

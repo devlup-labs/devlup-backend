@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
 
-from database import db
+from ...database import db
 
 router = APIRouter(prefix="/videos", tags=["Videos"])
 

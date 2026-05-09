@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, File, Form
-from database import db
-from models.devlup.timeline_models import Event
+from ...database import db
+from ...models.devlup.timeline_models import Event
 import uuid
 
 router = APIRouter(prefix="/timeline", tags=["Timeline"])

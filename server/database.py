@@ -3,7 +3,8 @@ import os
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 
-load_dotenv()  # loads .env file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, "..", ".env"))  # loads .env file
 
 MONGO_URL = os.getenv("MONGO_URL")
 

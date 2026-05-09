@@ -1,4 +1,4 @@
-from config.cloudinary import *
+from ..config.cloudinary import *
 import cloudinary.uploader
 
 def upload_media(file):

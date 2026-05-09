@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
-from database import db
-from models.devlup.blog_models import Blog
-from services.image import upload_image
-from services.media import upload_media
+from ...database import db
+from ...models.devlup.blog_models import Blog
+from ...services.image import upload_image
+from ...services.media import upload_media
 import uuid
 
 router = APIRouter(prefix="/blogs", tags=["Blogs"])

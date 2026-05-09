@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
-from database import db
-from models.devlup.team_models import Member, MemberHidden
-from services.image import upload_image
+from ...database import db
+from ...models.devlup.team_models import Member, MemberHidden
+from ...services.image import upload_image
 import uuid
 
 router = APIRouter(prefix="/team", tags=["Team"])

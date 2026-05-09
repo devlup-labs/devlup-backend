@@ -2,17 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-from routes.devlup import blogs
-from routes.devlup import videos
-from routes.devlup import podcasts
-from routes.devlup import team
-from routes.devlup import timeline
-from routes.devlup import auth, admin
-from routes.devlup import comments
-from routes.devlup import contact
+from .routes.devlup import blogs
+from .routes.devlup import videos
+from .routes.devlup import podcasts
+from .routes.devlup import team
+from .routes.devlup import timeline
+from .routes.devlup import auth, admin
+from .routes.devlup import comments
+from .routes.devlup import contact
 
-#  Force load .env from correct path
-load_dotenv(dotenv_path=".env")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, "..", ".env"))
 app = FastAPI(redirect_slashes=True) #  It allows clients to access the same resource with or without a trailing slash (e.g., /items and /items/) without receiving a 404 Not Found error.
 
 # 1. Define your allowed origins
