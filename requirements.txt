@@ -19,7 +19,7 @@ pydantic[email]  # For EmailStr support
 python-jose[cryptography]>=3.3.0
 
 # Password hashing (specific versions to avoid compatibility issues)
-passlib==1.7.4thi
+passlib==1.7.4
 bcrypt==4.0.1
 
 # Cloud image storage
