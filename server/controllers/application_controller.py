@@ -15,9 +15,12 @@ async def get_applications_controller():
         
     return applications
 
-async def create_application_controller(application: ApplicationCreate):
+async def create_application_controller(application: ApplicationCreate, submitter_email: str = None):
     app_dict = application.model_dump()
     app_dict["created_at"] = datetime.utcnow()
+    app_dict["updated_at"] = datetime.utcnow()
+    if submitter_email:
+        app_dict["submitter_email"] = submitter_email
     
     result = await application_collection.insert_one(app_dict)
     
@@ -40,10 +43,20 @@ async def get_application_controller(application_id: str):
     
     return app
 
+async def get_application_by_email_controller(email: str):
+    """Find an application by the submitter's email address. Returns None if not found."""
+    app = await application_collection.find_one({"submitter_email": email})
+    if not app:
+        return None
+    app["id"] = str(app["_id"])
+    del app["_id"]
+    return app
+
 async def update_application_controller(application_id: str, application_update: ApplicationUpdate):
     if not ObjectId.is_valid(application_id):
         raise HTTPException(status_code=400, detail="Invalid application ID")
     update_data = {k: v for k, v in application_update.model_dump(exclude_unset=True).items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
     
     if len(update_data) >= 1:
         update_result = await application_collection.update_one(

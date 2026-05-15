@@ -15,4 +15,6 @@ class ApplicationModel(BaseModel):
     project_name_2: Optional[str] = None
     status_1: Optional[str] = "pending"
     status_2: Optional[str] = "pending"
+    submitter_email: Optional[str] = None
     created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
