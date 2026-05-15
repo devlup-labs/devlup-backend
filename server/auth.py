@@ -19,6 +19,18 @@ def create_access_token(data: dict):
 
 security = HTTPBearer()
 
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Decode JWT and return the user payload. Works for any authenticated user."""
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
+
 def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     try:
