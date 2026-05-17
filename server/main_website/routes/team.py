@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form, Depends
 from auth import admin_required
-from server.core.database import db
+from server.core.database import main_db
 from server.main_website.models.team_models import Member, MemberHidden
 from server.main_website.controllers.image import upload_image
 import uuid
@@ -55,7 +55,7 @@ async def create_member(
         member_email=member_email
     )
 
-    db.team.insert_one(member.model_dump())
+    main_db.team.insert_one(member.model_dump())
 
     return {
         "success": True,
@@ -68,7 +68,7 @@ async def create_member(
 @router.get("/")
 def get_members():
 
-    members = list(db.team.find({}, {"_id": 0}))
+    members = list(main_db.team.find({}, {"_id": 0}))
 
     return {
         "success": True,
@@ -87,12 +87,12 @@ def get_member_admin(
 
 ):
 
-    member = db.team.find_one(
+    member = main_db.team.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
 
-    hidden = db.team_hidden.find_one(
+    hidden = main_db.team_hidden.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
@@ -114,7 +114,7 @@ def get_member_admin(
 @router.get("/{member_id}")
 def get_member(member_id: str):
 
-    member = db.team.find_one(
+    member = main_db.team.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
@@ -136,12 +136,12 @@ def get_member(member_id: str):
 @router.get("/{member_id}/{code}")
 def get_member_with_hidden(member_id: str, code: str):
 
-    member = db.team.find_one(
+    member = main_db.team.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
 
-    hidden = db.team_hidden.find_one(
+    hidden = main_db.team_hidden.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
@@ -181,7 +181,7 @@ def create_hidden(
 
 ):
 
-    db.team_hidden.insert_one(hidden.model_dump())
+    main_db.team_hidden.insert_one(hidden.model_dump())
 
     return {
         "success": True,
@@ -191,7 +191,7 @@ def create_hidden(
 @router.post("/comment/{member_id}")
 def add_comment(member_id: str, data: dict):
 
-    db.team_hidden.update_one(
+    main_db.team_hidden.update_one(
         {"member_id": member_id},
         {
             "$push": {
@@ -208,7 +208,7 @@ def add_comment(member_id: str, data: dict):
 @router.delete("/comment/{member_id}/{index}")
 def delete_comment(member_id: str, index: int):
 
-    hidden = db.team_hidden.find_one(
+    hidden = main_db.team_hidden.find_one(
         {"member_id": member_id}
     )
 
@@ -228,7 +228,7 @@ def delete_comment(member_id: str, index: int):
 
     comments.pop(index)
 
-    db.team_hidden.update_one(
+    main_db.team_hidden.update_one(
         {"member_id": member_id},
         {
             "$set": {
@@ -265,7 +265,7 @@ async def update_member(
 
 ):
 
-    existing_member = db.team.find_one(
+    existing_member = main_db.team.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
@@ -316,12 +316,12 @@ async def update_member(
 
         update_data["member_image"] = image_url
 
-    db.team.update_one(
+    main_db.team.update_one(
         {"member_id": member_id},
         {"$set": update_data}
     )
 
-    updated_member = db.team.find_one(
+    updated_member = main_db.team.find_one(
         {"member_id": member_id},
         {"_id": 0}
     )
@@ -337,7 +337,7 @@ async def update_member(
 @router.delete("/cleanup-empty")
 def cleanup_empty():
 
-    result = db.team.delete_many({
+    result = main_db.team.delete_many({
         "$or": [
             {"member_id": ""},
             {"member_id": {"$exists": False}}
@@ -359,10 +359,10 @@ def delete_member(
 
 ):
 
-    result = db.team.delete_one({"member_id": member_id})
+    result = main_db.team.delete_one({"member_id": member_id})
 
     # Also delete hidden data
-    db.team_hidden.delete_one({"member_id": member_id})
+    main_db.team_hidden.delete_one({"member_id": member_id})
 
     if result.deleted_count == 0:
         raise HTTPException(
@@ -387,7 +387,7 @@ def save_hidden(
 
 ):
 
-    db.team_hidden.update_one(
+    main_db.team_hidden.update_one(
         {"member_id": member_id},
         {"$set": hidden.model_dump()},
         upsert=True

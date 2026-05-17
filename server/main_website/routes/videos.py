@@ -5,14 +5,14 @@ import xml.etree.ElementTree as ET
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
 
-from server.core.database import db
+from server.core.database import main_db
 
 router = APIRouter(prefix="/videos", tags=["Videos"])
 
 CHANNEL_ID = "UCFaRxxB8-BB5GXH-wlwGqIw"
 RSS_URL = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
 
-video_collection = db["videos"]
+video_collection = main_db["videos"]
 
 
 #  RSS parser

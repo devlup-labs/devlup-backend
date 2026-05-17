@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
-from server.core.database import db
+from server.core.database import main_db
 from server.main_website.models.podcast_models import Podcast
 from server.main_website.controllers.image import upload_image
 from server.main_website.controllers.media import upload_media
@@ -57,7 +57,7 @@ async def create_podcast(
         podcast_external_url=podcast_external_url
     )
 
-    db.podcasts.insert_one(podcast.model_dump())
+    main_db.podcasts.insert_one(podcast.model_dump())
 
     return {
         "success": True,
@@ -70,7 +70,7 @@ async def create_podcast(
 def get_podcasts():
     # Convert cursor to list and exclude internal MongoDB _id
   #  REMOVE podcast_url from exclusion
-    podcasts = list(db.podcasts.find({}, {"_id": 0}))
+    podcasts = list(main_db.podcasts.find({}, {"_id": 0}))
     return {
         "success": True,
         "data": podcasts,
@@ -80,7 +80,7 @@ def get_podcasts():
 # GET single podcast
 @router.get("/{podcast_id}")
 def get_podcast(podcast_id: str):
-    podcast = db.podcasts.find_one({"podcast_id": podcast_id}, {"_id": 0})
+    podcast = main_db.podcasts.find_one({"podcast_id": podcast_id}, {"_id": 0})
     if not podcast:
         raise HTTPException(status_code=404, detail="Podcast not found")
     
@@ -110,7 +110,7 @@ def update_podcast(
 
 ):
 
-    existing_podcast = db.podcasts.find_one(
+    existing_podcast = main_db.podcasts.find_one(
         {"podcast_id": podcast_id},
         {"_id": 0}
     )
@@ -157,12 +157,12 @@ def update_podcast(
             detail="No fields provided for update"
         )
 
-    db.podcasts.update_one(
+    main_db.podcasts.update_one(
         {"podcast_id": podcast_id},
         {"$set": update_data}
     )
 
-    updated_podcast = db.podcasts.find_one(
+    updated_podcast = main_db.podcasts.find_one(
         {"podcast_id": podcast_id},
         {"_id": 0}
     )
@@ -176,7 +176,7 @@ def update_podcast(
 # DELETE podcast
 @router.delete("/{podcast_id}")
 def delete_podcast(podcast_id: str):
-    result = db.podcasts.delete_one({"podcast_id": podcast_id})
+    result = main_db.podcasts.delete_one({"podcast_id": podcast_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Podcast not found")
         
