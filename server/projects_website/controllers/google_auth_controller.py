@@ -7,7 +7,7 @@ from server.projects_website.auth import create_access_token
 from server.projects_website.schemas.user_schema import GoogleAuthRequest
 import os
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_ID = os.getenv("PROJECTS_GOOGLE_CLIENT_ID")
 
 
 async def google_auth_controller(auth_request: GoogleAuthRequest):

@@ -7,8 +7,8 @@ router = APIRouter()
 
 @router.post("/login")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    admin_username = os.getenv("ADMIN_USERNAME")
-    admin_password = os.getenv("ADMIN_PASSWORD")
+    admin_username = os.getenv("PROJECTS_ADMIN_USERNAME")
+    admin_password = os.getenv("PROJECTS_ADMIN_PASSWORD")
 
     if form_data.username != admin_username or form_data.password != admin_password:
         raise HTTPException(

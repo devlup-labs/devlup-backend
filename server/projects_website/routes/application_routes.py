@@ -18,7 +18,7 @@ router = APIRouter()
 
 def _check_deadline():
     """Raise 403 if the application deadline has passed (IST)."""
-    deadline_str = os.getenv("APPLICATION_DEADLINE")
+    deadline_str = os.getenv("PROJECTS_APPLICATION_DEADLINE")
     if deadline_str:
         try:
             from datetime import timezone, timedelta
@@ -39,7 +39,7 @@ def _check_deadline():
 # Get application deadline info (public, no auth)
 @router.get("/applications/deadline/info")
 async def get_deadline_info():
-    deadline_str = os.getenv("APPLICATION_DEADLINE", "")
+    deadline_str = os.getenv("PROJECTS_APPLICATION_DEADLINE", "")
     if not deadline_str:
         return {"deadline": None, "is_open": True}
     try:
