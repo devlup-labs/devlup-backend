@@ -1,5 +1,5 @@
 import asyncio
-from database import stats_collection
+from server.core.database import stats_collection
 
 async def count():
     c = await stats_collection.count_documents({})

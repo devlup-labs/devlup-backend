@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from datetime import datetime
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from server.core.database import user_collection
+from server.core.database import projects_user_collection
 from server.projects_website.auth import create_access_token
 from server.projects_website.schemas.user_schema import GoogleAuthRequest
 import os
@@ -41,13 +41,13 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
         )
 
     # Check if user already exists
-    existing_user = await user_collection.find_one({"google_id": google_id})
+    existing_user = await projects_user_collection.find_one({"google_id": google_id})
 
     now = datetime.utcnow()
 
     if existing_user:
         # Update last login and refresh profile info
-        await user_collection.update_one(
+        await projects_user_collection.update_one(
             {"google_id": google_id},
             {
                 "$set": {
@@ -57,7 +57,7 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
                 }
             },
         )
-        user = await user_collection.find_one({"google_id": google_id})
+        user = await projects_user_collection.find_one({"google_id": google_id})
     else:
         # Create new user
         new_user = {
@@ -69,8 +69,8 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
             "created_at": now,
             "last_login": now,
         }
-        result = await user_collection.insert_one(new_user)
-        user = await user_collection.find_one({"_id": result.inserted_id})
+        result = await projects_user_collection.insert_one(new_user)
+        user = await projects_user_collection.find_one({"_id": result.inserted_id})
 
     # Build response
     user_id = str(user["_id"])
@@ -107,7 +107,7 @@ async def get_user_profile_controller(user_id: str):
     if not ObjectId.is_valid(user_id):
         raise HTTPException(status_code=400, detail="Invalid user ID")
 
-    user = await user_collection.find_one({"_id": ObjectId(user_id)})
+    user = await projects_user_collection.find_one({"_id": ObjectId(user_id)})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 

@@ -1,7 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from dotenv import load_dotenv
 import os
-load_dotenv()
 
 MONGO_URI = os.getenv("MONGO_URI")
 PROJECTS_DB_NAME =os.getenv("PROJECTS_DB_NAME")
@@ -21,4 +19,6 @@ stats_collection = projects_db["stats"]
 # page_stats_collection = projects_db["page_stats"]
 # project_mentor_collection = projects_db["project_mentors"]
 form_fields_collection = projects_db["form_fields"]
-user_collection = projects_db["users"]
+projects_user_collection = projects_db["users"]
+
+main_user_collection = main_db["devlup_db"]["users"]

@@ -3,8 +3,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 from datetime import datetime, timedelta
 import os 
-from dotenv import load_dotenv
-load_dotenv()
 
 SECRET_KEY = os.getenv("PROJECTS_SECRET_KEY")
 ALGORITHM = os.getenv("PROJECTS_ALGORITHM")

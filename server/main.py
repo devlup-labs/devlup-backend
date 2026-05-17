@@ -1,18 +1,13 @@
-from fastapi import FastAPI, Request
-from starlette.responses import Response
-from main_website.app import main_app
-from projects_website.app import projects_app
+import os
+from dotenv import load_dotenv
+load_dotenv()
+from starlette.applications import Starlette
+from starlette.routing import Host
 
-app = FastAPI()
+from server.projects_website.app import projects_app
+from server.main_website.app import main_app
 
-@app.middleware("http")
-async def dispatch_by_subdomain(request: Request, call_next):
-    host = request.headers.get("host", "").lower()
-    
-    if "projects.abc.tech" in host:
-        await projects_app.asgi_app(request.scope, request.receive, request.send)
-        return Response(content=b"")
-    
-    else:
-        await main_app.asgi_app(request.scope, request.receive, request.send)
-        return Response(content=b"")
+app = Starlette(routes=[
+    Host("projects.devluplabs.tech", app=projects_app),
+    Host("devluplabs.tech", app=main_app)
+])
