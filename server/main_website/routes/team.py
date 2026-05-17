@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form, Depends
-from auth import admin_required
+from server.main_website.auth import admin_required
 from server.core.database import main_db
 from server.main_website.models.team_models import Member, MemberHidden
 from server.main_website.controllers.image import upload_image
@@ -8,11 +8,9 @@ import uuid
 
 router = APIRouter(prefix="/team", tags=["Team"])
 
-
 # CREATE member
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_member(
-
     admin=Depends(admin_required),
 
     member_name: str = Form(...),
@@ -26,7 +24,6 @@ async def create_member(
     member_image: str = Form(None),
 
     image: UploadFile = File(None)
-
 ):
 
     image_url = member_image or ""
