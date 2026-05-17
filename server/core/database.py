@@ -21,4 +21,4 @@ stats_collection = projects_db["stats"]
 form_fields_collection = projects_db["form_fields"]
 projects_user_collection = projects_db["users"]
 
-main_user_collection = main_db["devlup_db"]["users"]
+main_user_collection = main_db["users"]
