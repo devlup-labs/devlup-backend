@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-from server.schemas.application_schema import ApplicationCreate, ApplicationUpdate
-from server.models.application_model import ApplicationModel
-from server.auth import get_admin_user, get_current_user
-from server.controllers.application_controller import (
+from server.projects_website.schemas.application_schema import ApplicationCreate, ApplicationUpdate
+from server.projects_website.models.application_model import ApplicationModel
+from server.projects_website.auth import get_admin_user, get_current_user
+from server.projects_website.controllers.application_controller import (
     get_applications_controller,
     create_application_controller,
     get_application_controller,

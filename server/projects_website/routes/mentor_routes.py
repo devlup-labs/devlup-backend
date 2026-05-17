@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from server.schemas.mentor_schema import Mentor
-from server.auth import get_admin_user
-from server.controllers.mentor_controller import (
+from server.projects_website.schemas.mentor_schema import Mentor
+from server.projects_website.auth import get_admin_user
+from server.projects_website.controllers.mentor_controller import (
     create_mentor_controller,
     get_mentor_controller,
     update_mentor_controller,

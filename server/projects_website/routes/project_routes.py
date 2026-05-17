@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Query, status, Depends
 from typing import List, Optional
 
-from server.auth import get_admin_user
-from server.schemas.project_schema import ProjectCreate, ProjectUpdate
-from server.models.project_model import ProjectModel
-from server.controllers import project_controller
+from server.projects_website.auth import get_admin_user
+from server.projects_website.schemas.project_schema import ProjectCreate, ProjectUpdate
+from server.projects_website.models.project_model import ProjectModel
+from server.projects_website.controllers import project_controller
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 

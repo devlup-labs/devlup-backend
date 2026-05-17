@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from server.schemas.form_field_schema import FormFieldCreate, FormFieldUpdate
-from server.controllers.form_field_controller import (
+from server.projects_website.schemas.form_field_schema import FormFieldCreate, FormFieldUpdate
+from server.projects_website.controllers.form_field_controller import (
     get_form_fields_controller,
     create_form_field_controller,
     get_form_field_controller,
     update_form_field_controller,
     delete_form_field_controller
 )
-from server.auth import get_admin_user
+from server.projects_website.auth import get_admin_user
 
 router = APIRouter(
     prefix="/form-fields",

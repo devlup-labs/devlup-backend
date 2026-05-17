@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from server.schemas.timeline_schema import TimelineCreate, TimelineUpdate
-from server.auth import get_admin_user
-from server.controllers.timeline_controller import (
+from server.projects_website.schemas.timeline_schema import TimelineCreate, TimelineUpdate
+from server.projects_website.auth import get_admin_user
+from server.projects_website.controllers.timeline_controller import (
     create_timeline_controller,
     get_timeline_controller,
     update_timeline_controller,

@@ -3,8 +3,8 @@ from typing import List, Optional
 from bson import ObjectId
 from datetime import datetime, timezone
 
-from server.database import project_collection, mentor_collection
-from server.schemas.project_schema import ProjectCreate, ProjectUpdate
+from server.core.database import project_collection, mentor_collection
+from server.projects_website.schemas.project_schema import ProjectCreate, ProjectUpdate
 import urllib.parse
 
 async def sync_project_mentors(project: dict):

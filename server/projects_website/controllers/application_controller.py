@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from bson import ObjectId
 from datetime import datetime
-from server.database import application_collection
-from server.schemas.application_schema import ApplicationCreate, ApplicationUpdate
+from server.core.database import application_collection
+from server.projects_website.schemas.application_schema import ApplicationCreate, ApplicationUpdate
 
 async def get_applications_controller():
     applications = []

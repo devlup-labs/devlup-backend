@@ -2,7 +2,7 @@ from pydantic import Field, ConfigDict
 from datetime import datetime, timezone
 from typing import Optional, Any
 from bson import ObjectId
-from server.schemas.stats_schema import StatBase
+from server.projects_website.schemas.project_schema import ProjectBase
 
 try:
     from pydantic_core import core_schema
@@ -53,8 +53,11 @@ else:
         def __modify_schema__(cls, field_schema):
             field_schema.update(type="string")
 
-class StatModel(StatBase):
+
+class ProjectModel(ProjectBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     if PYDANTIC_V2:
         model_config = ConfigDict(

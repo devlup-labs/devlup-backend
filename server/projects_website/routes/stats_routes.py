@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from typing import List
-from server.schemas.stats_schema import StatCreate
-from server.models.stats_model import StatModel
-import server.controllers.stats_controller as stat_controller
+from server.projects_website.schemas.stats_schema import StatCreate
+from server.projects_website.models.stats_model import StatModel
+import server.projects_website.controllers.stats_controller as stat_controller
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
 

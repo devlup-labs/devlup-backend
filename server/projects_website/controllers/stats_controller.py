@@ -1,7 +1,7 @@
 from fastapi import HTTPException
-from server.database import stats_collection
-from server.models.stats_model import StatModel
-from server.schemas.stats_schema import StatCreate
+from server.core.database import stats_collection
+from server.projects_website.models.stats_model import StatModel
+from server.projects_website.schemas.stats_schema import StatCreate
 
 async def record_new_visit(stat_data: StatCreate):
     stat_dict = stat_data.dict()

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from bson import ObjectId
-from server.database import mentor_collection
-from server.schemas.mentor_schema import Mentor
+from server.core.database import mentor_collection
+from server.projects_website.schemas.mentor_schema import Mentor
 
 async def create_mentor_controller(mentor: Mentor):
     result = await mentor_collection.insert_one(mentor.model_dump())

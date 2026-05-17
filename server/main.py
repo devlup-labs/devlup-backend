@@ -1,28 +1,18 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from server.routes import auth_routes
-from server.routes import project_routes
-from server.routes import mentor_routes
-from server.routes import timeline_routes
-from server.routes import application_routes
-from server.routes import stats_routes
-from server.routes import form_field_routes
-from server.routes import google_auth_routes
+from fastapi import FastAPI, Request
+from starlette.responses import Response
+from main_website.app import main_app
+from projects_website.app import projects_app
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origin_regex="https?://.*",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.include_router(project_routes.router)
-app.include_router(mentor_routes.router)
-app.include_router(timeline_routes.router)
-app.include_router(auth_routes.router)
-app.include_router(application_routes.router)
-app.include_router(stats_routes.router)
-app.include_router(form_field_routes.router)
-app.include_router(google_auth_routes.router)
+@app.middleware("http")
+async def dispatch_by_subdomain(request: Request, call_next):
+    host = request.headers.get("host", "").lower()
+    
+    if "projects.abc.tech" in host:
+        await projects_app.asgi_app(request.scope, request.receive, request.send)
+        return Response(content=b"")
+    
+    else:
+        await main_app.asgi_app(request.scope, request.receive, request.send)
+        return Response(content=b"")

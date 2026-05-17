@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from bson import ObjectId
-from server.database import timeline_collection
-from server.schemas.timeline_schema import TimelineCreate, TimelineUpdate
-from server.models.timeline_model import timeline_serializer
+from server.core.database import timeline_collection
+from server.projects_website.schemas.timeline_schema import TimelineCreate, TimelineUpdate
+from server.projects_website.models.timeline_model import timeline_serializer
 
 async def create_timeline_controller(timeline: TimelineCreate):
     timeline_dict = timeline.model_dump() if hasattr(timeline, "model_dump") else timeline.dict()

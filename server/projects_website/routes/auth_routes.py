@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from server.auth import create_access_token
+from server.projects_website.auth import create_access_token
 import os
 
 router = APIRouter()

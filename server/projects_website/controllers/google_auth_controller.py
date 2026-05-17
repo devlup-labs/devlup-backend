@@ -2,9 +2,9 @@ from fastapi import HTTPException
 from datetime import datetime
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from server.database import user_collection
-from server.auth import create_access_token
-from server.schemas.user_schema import GoogleAuthRequest
+from server.core.database import user_collection
+from server.projects_website.auth import create_access_token
+from server.projects_website.schemas.user_schema import GoogleAuthRequest
 import os
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")

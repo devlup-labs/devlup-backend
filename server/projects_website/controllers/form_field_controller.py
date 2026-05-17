@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from bson import ObjectId
-from server.database import form_fields_collection
-from server.schemas.form_field_schema import FormFieldCreate, FormFieldUpdate
+from server.core.database import form_fields_collection
+from server.projects_website.schemas.form_field_schema import FormFieldCreate, FormFieldUpdate
 
 async def get_form_fields_controller():
     fields = []

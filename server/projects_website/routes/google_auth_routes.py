@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from server.auth import get_current_user
-from server.schemas.user_schema import GoogleAuthRequest, GoogleAuthResponse, UserResponse
-from server.controllers.google_auth_controller import (
+from server.projects_website.auth import get_current_user
+from server.projects_website.schemas.user_schema import GoogleAuthRequest, GoogleAuthResponse, UserResponse
+from server.projects_website.controllers.google_auth_controller import (
     google_auth_controller,
     get_user_profile_controller,
 )
