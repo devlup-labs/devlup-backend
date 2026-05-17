@@ -9,5 +9,5 @@ from server.main_website.app import main_app
 
 app = Starlette(routes=[
     Host("projects.devluplabs.tech", app=projects_app),
-    Host("devluplabs.tech", app=main_app)
+    Host("localhost", app=main_app)
 ])

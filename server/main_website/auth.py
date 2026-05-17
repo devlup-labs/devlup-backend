@@ -6,7 +6,7 @@ import os
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 SECRET_KEY = os.getenv("MAIN_SECRET_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("MAIN_ALGORITHM")
 
 
 def admin_required(token: str = Depends(oauth2_scheme)):

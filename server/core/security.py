@@ -6,7 +6,7 @@ import os
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = os.getenv("MAIN_SECRET_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("MAIN_ALGORITHM")
 
 #  hash password
 def hash_password(password: str):
