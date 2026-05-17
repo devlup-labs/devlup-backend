@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends,HTTPException
-from auth import admin_required
+from server.main_website.auth import admin_required
 from server.core.database import main_user_collection
 from bson import ObjectId 
 router = APIRouter(prefix="/admin", tags=["Admin"])
