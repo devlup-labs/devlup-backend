@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from server.main_website.models.contact_models import ContactCreate, ContactResponse
-from server.core.database import main_db
+from server.core.database import main_db_sync
 from datetime import datetime
 import uuid
 
@@ -19,7 +19,7 @@ async def submit_contact(data: ContactCreate):
         contact_data["contact_id"] = str(uuid.uuid4())
         contact_data["created_at"] = datetime.utcnow().isoformat()
 
-        main_db.contacts.insert_one(contact_data)
+        main_db_sync.contacts.insert_one(contact_data)
 
         return ContactResponse(message="Query submitted successfully")
 
@@ -32,7 +32,7 @@ async def submit_contact(data: ContactCreate):
 async def get_all_contacts():
     try:
         contacts = list(
-            main_db.contacts.find({}, {"_id": 0}).sort("created_at", -1)
+            main_db_sync.contacts.find({}, {"_id": 0}).sort("created_at", -1)
         )
 
         return {
@@ -49,7 +49,7 @@ async def get_all_contacts():
 @router.delete("/{contact_id}")
 async def delete_contact(contact_id: str):
     try:
-        result = main_db.contacts.delete_one({"contact_id": contact_id})
+        result = main_db_sync.contacts.delete_one({"contact_id": contact_id})
 
         if result.deleted_count == 0:
             raise HTTPException(

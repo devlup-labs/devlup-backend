@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from datetime import datetime
-from server.core.database import main_db
+from server.core.database import main_db_sync
 from server.main_website.models.blog_models import Comment
 import uuid
 
@@ -28,7 +28,7 @@ def create_comment(comment: Comment):
     
     try:
         # Save to database
-        result = main_db.comments.insert_one(comment_data)
+        result = main_db_sync.comments.insert_one(comment_data)
         print(f"[COMMENT] Comment inserted successfully: blog_id={comment_data['blog_id']}, comment_id={comment_data['comment_id']}")
         
         return {
@@ -50,7 +50,7 @@ def get_all_comments():
     """
     try:
         comments = list(
-            main_db.comments.find(
+            main_db_sync.comments.find(
                 {},
                 {"_id": 0}
             ).sort("created_at", -1)
@@ -80,7 +80,7 @@ def get_blog_comments(blog_id: str):
     """
     try:
         comments = list(
-            main_db.comments.find(
+            main_db_sync.comments.find(
                 {"blog_id": blog_id},
                 {"_id": 0}
             ).sort("created_at", -1)
@@ -108,7 +108,7 @@ def delete_comment(comment_id: str):
     Delete a comment by ID.
     """
     try:
-        result = main_db.comments.delete_one({"comment_id": comment_id})
+        result = main_db_sync.comments.delete_one({"comment_id": comment_id})
         
         if result.deleted_count == 0:
             raise HTTPException(

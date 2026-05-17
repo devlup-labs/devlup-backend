@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
-from server.core.database import main_db
+from server.core.database import main_db_sync
 from server.main_website.models.blog_models import Blog
 from server.main_website.controllers.image import upload_image
 from server.main_website.controllers.media import upload_media
@@ -59,7 +59,7 @@ async def create_blog(
         blog_external_url=blog_external_url
     )
 
-    main_db.blogs.insert_one(blog.model_dump())
+    main_db_sync.blogs.insert_one(blog.model_dump())
 
     return {
         "success": True,
@@ -73,7 +73,7 @@ async def create_blog(
 def get_blogs():
 
     blogs = list(
-        main_db.blogs.find(
+        main_db_sync.blogs.find(
             {},
             {
                 "_id": 0,
@@ -95,7 +95,7 @@ def get_blogs():
 @router.get("/{blog_id}")
 def get_blog(blog_id: str):
 
-    blog = main_db.blogs.find_one(
+    blog = main_db_sync.blogs.find_one(
         {"blog_id": blog_id},
         {"_id": 0}
     )
@@ -137,7 +137,7 @@ async def update_blog(
 
 ):
 
-    existing_blog = main_db.blogs.find_one(
+    existing_blog = main_db_sync.blogs.find_one(
         {"blog_id": blog_id},
         {"_id": 0}
     )
@@ -191,12 +191,12 @@ async def update_blog(
 
         update_data["blog_thumbnail"] = thumbnail_url
 
-    main_db.blogs.update_one(
+    main_db_sync.blogs.update_one(
         {"blog_id": blog_id},
         {"$set": update_data}
     )
 
-    updated_blog = main_db.blogs.find_one(
+    updated_blog = main_db_sync.blogs.find_one(
         {"blog_id": blog_id},
         {"_id": 0}
     )
@@ -212,7 +212,7 @@ async def update_blog(
 @router.delete("/{blog_id}")
 def delete_blog(blog_id: str):
 
-    result = main_db.blogs.delete_one(
+    result = main_db_sync.blogs.delete_one(
         {"blog_id": blog_id}
     )
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, File, Form
-from server.core.database import main_db
+from server.core.database import main_db_sync
 from server.main_website.models.timeline_models import Event
 import uuid
 
@@ -27,7 +27,7 @@ def create_event(
         event_date=event_date
     )
 
-    main_db.timeline.insert_one(event.model_dump())
+    main_db_sync.timeline.insert_one(event.model_dump())
 
     return {
         "success": True,
@@ -39,7 +39,7 @@ def create_event(
 # GET all events
 @router.get("/")
 def get_events():
-    events = list(main_db.timeline.find({}, {"_id": 0}))
+    events = list(main_db_sync.timeline.find({}, {"_id": 0}))
 
     return {
         "success": True,
@@ -51,7 +51,7 @@ def get_events():
 # GET single event
 @router.get("/{event_id}")
 def get_event(event_id: str):
-    event = main_db.timeline.find_one({"event_id": event_id}, {"_id": 0})
+    event = main_db_sync.timeline.find_one({"event_id": event_id}, {"_id": 0})
 
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -76,7 +76,7 @@ async def update_event(
 
 ):
 
-    existing_event = main_db.timeline.find_one(
+    existing_event = main_db_sync.timeline.find_one(
         {"event_id": event_id},
         {"_id": 0}
     )
@@ -107,12 +107,12 @@ async def update_event(
             detail="No fields provided for update"
         )
 
-    main_db.timeline.update_one(
+    main_db_sync.timeline.update_one(
         {"event_id": event_id},
         {"$set": update_data}
     )
 
-    updated_event = main_db.timeline.find_one(
+    updated_event = main_db_sync.timeline.find_one(
         {"event_id": event_id},
         {"_id": 0}
     )
@@ -127,7 +127,7 @@ async def update_event(
 # DELETE event
 @router.delete("/{event_id}")
 def delete_event(event_id: str):
-    result = main_db.timeline.delete_one({"event_id": event_id})
+    result = main_db_sync.timeline.delete_one({"event_id": event_id})
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Event not found")
