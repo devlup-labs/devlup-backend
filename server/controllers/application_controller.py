@@ -1,8 +1,50 @@
 from fastapi import HTTPException
 from bson import ObjectId
 from datetime import datetime
+import requests
+import os
+import asyncio
 from server.database import application_collection
 from server.schemas.application_schema import ApplicationCreate, ApplicationUpdate
+
+GOOGLE_SCRIPT_URL = os.getenv("GOOGLE_SCRIPT_URL")
+
+
+async def send_to_google_script(application_data: dict):
+    """
+    Send application data to Google Apps Script asynchronously.
+    This runs in the background and doesn't block the API response.
+    Maps all application fields dynamically to the payload.
+    """
+    if not GOOGLE_SCRIPT_URL:
+        print("Warning: GOOGLE_SCRIPT_URL not configured in .env")
+        return
+
+    try:
+        # Create a payload with ALL fields from the application
+        # This allows dynamic form fields to be included automatically
+        payload = {}
+        
+        for key, value in application_data.items():
+            # Skip internal fields and MongoDB ID
+            if key not in ["_id", "id", "updated_at"]:
+                # Convert datetime objects to strings for JSON serialization
+                if hasattr(value, "isoformat"):
+                    payload[key] = value.isoformat()
+                else:
+                    payload[key] = value
+
+        # Send POST request to Google Apps Script
+        response = requests.post(GOOGLE_SCRIPT_URL, json=payload, timeout=10)
+        print(f"Google Script response: {response.status_code}")
+        print(f"Payload sent: {payload}")
+        
+    except requests.exceptions.Timeout:
+        print("Error: Google Apps Script request timed out")
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending data to Google Apps Script: {str(e)}")
+    except Exception as e:
+        print(f"Unexpected error in send_to_google_script: {str(e)}")
 
 async def get_applications_controller():
     applications = []
@@ -27,6 +69,12 @@ async def create_application_controller(application: ApplicationCreate, submitte
     new_app = await application_collection.find_one({"_id": result.inserted_id})
     new_app["id"] = str(new_app["_id"])
     del new_app["_id"]
+    
+    # Send application data to Google Apps Script in the background (non-blocking)
+    try:
+        asyncio.create_task(send_to_google_script(app_dict))
+    except Exception as e:
+        print(f"Failed to queue Google Script task: {str(e)}")
     
     return new_app
 
