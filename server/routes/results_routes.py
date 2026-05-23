@@ -100,22 +100,28 @@ async def get_results(request: Request):
         if not title:
             continue
 
+        # Get mentors list
+        mentors = [
+            {
+                "name": m.get("name"),
+                "role": m.get("role", "Project Mentor"),
+                "email": m.get("email"),
+                "linkedin": m.get("linkedin"),
+                "github": m.get("github"),
+                "image_url": m.get("image_url")
+            } for m in p.get("mentors", []) if m
+        ]
+
+        # Get candidates list
+        candidates = list(grouped_candidates.get(title, []))
+
         results.append({
             "project_title": title,
             "project_description": p.get("project_description", ""),
             "tech_stack": p.get("tech_stack", []),
             "category": p.get("category", ""),
-            "mentors": [
-                {
-                    "name": m.get("name"),
-                    "role": m.get("role", "Project Mentor"),
-                    "email": m.get("email"),
-                    "linkedin": m.get("linkedin"),
-                    "github": m.get("github"),
-                    "image_url": m.get("image_url")
-                } for m in p.get("mentors", []) if m
-            ],
-            "accepted_candidates": grouped_candidates.get(title, [])
+            "mentors": mentors,
+            "accepted_candidates": candidates
         })
 
     return results
