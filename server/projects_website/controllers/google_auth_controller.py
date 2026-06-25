@@ -43,6 +43,25 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
     # Check if user already exists
     existing_user = await projects_user_collection.find_one({"google_id": google_id})
 
+    # Check if user is a mentor in any live project (status="ongoing", approval_status="accepted")
+    from server.database import project_collection
+    is_live_mentor = False
+    if email:
+        live_proj = await project_collection.find_one({
+            "status": "ongoing",
+            "approval_status": "accepted",
+            "mentors.email": email
+        })
+        if live_proj:
+            is_live_mentor = True
+
+    # Determine user role (preserving admin role if already set)
+    user_role = "user"
+    if existing_user and existing_user.get("role") == "admin":
+        user_role = "admin"
+    elif is_live_mentor:
+        user_role = "mentor"
+
     now = datetime.utcnow()
 
     if existing_user:
@@ -54,6 +73,7 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
                     "name": name,
                     "picture": picture,
                     "last_login": now,
+                    "role": user_role,
                 }
             },
         )
@@ -65,7 +85,7 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
             "name": name,
             "picture": picture,
             "google_id": google_id,
-            "role": "user",
+            "role": user_role,
             "created_at": now,
             "last_login": now,
         }
