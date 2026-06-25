@@ -11,5 +11,5 @@ app = Starlette(routes=[
     Host("projects.devluplabs.tech", app=projects_app),
     Host("devluplabs.tech", app=main_app),
     Host("devlup-labs.vercel.app", app=main_app),
-    Host("devlup-backend.onrender.com", app=projects_app),
+    Host("devlup-backend.onrender.com", app=main_app)
 ])
