@@ -1,15 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.routes import auth_routes
-from server.routes import project_routes
-from server.routes import mentor_routes
-from server.routes import timeline_routes
-from server.routes import application_routes
-from server.routes import stats_routes
-from server.routes import form_field_routes
-from server.routes import google_auth_routes
-from server.routes import mentor_panel_routes
-from server.routes import results_routes
+from server.projects_website.routes import auth_routes
+from server.projects_website.routes import project_routes
+from server.projects_website.routes import mentor_routes
+from server.projects_website.routes import timeline_routes
+from server.projects_website.routes import application_routes
+from server.projects_website.routes import stats_routes
+from server.projects_website.routes import form_field_routes
+from server.projects_website.routes import google_auth_routes
+from server.projects_website.routes import mentor_panel_routes
+from server.projects_website.routes import results_routes
 
 app = FastAPI()
 
