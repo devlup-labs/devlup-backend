@@ -8,6 +8,6 @@ from server.projects_website.app import projects_app
 from server.main_website.app import main_app
 
 app = Starlette(routes=[
-    Host("projects.devluplabs.tech", app=projects_app),
+    Host("localhost:8080", app=projects_app),
     Host("devluplabs.tech", app=main_app)
 ])

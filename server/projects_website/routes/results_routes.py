@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel
 from typing import List
 import jwt
-from server.database import project_collection, application_collection, settings_collection
-from server.auth import get_admin_user, SECRET_KEY, ALGORITHM
+from server.core.database import project_collection, application_collection, settings_collection
+from server.projects_website.auth import get_admin_user, SECRET_KEY, ALGORITHM
 
 router = APIRouter(tags=["Results & Settings"])
 

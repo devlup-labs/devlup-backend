@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from bson import ObjectId
 from typing import List, Optional
-from server.auth import get_current_user
-from server.database import project_collection, application_collection
-from server.models.application_model import ApplicationModel
-from server.models.project_model import ProjectModel
-from server.schemas.application_schema import ApplicationUpdate
+from server.projects_website.auth import get_current_user
+from server.core.database import project_collection, application_collection
+from server.projects_website.models.application_model import ApplicationModel
+from server.projects_website.models.project_model import ProjectModel
+from server.projects_website.schemas.application_schema import ApplicationUpdate
 
 router = APIRouter(prefix="/mentor", tags=["Mentor Panel"])
 

@@ -23,5 +23,6 @@ stats_collection = projects_db["stats"]
 # project_mentor_collection = projects_db["project_mentors"]
 form_fields_collection = projects_db["form_fields"]
 projects_user_collection = projects_db["users"]
+settings_collection = projects_db["settings"]
 
 main_user_collection = main_db_async["users"]

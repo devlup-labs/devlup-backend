@@ -44,7 +44,7 @@ async def google_auth_controller(auth_request: GoogleAuthRequest):
     existing_user = await projects_user_collection.find_one({"google_id": google_id})
 
     # Check if user is a mentor in any live project (status="ongoing", approval_status="accepted")
-    from server.database import project_collection
+    from server.core.database import project_collection
     is_live_mentor = False
     if email:
         live_proj = await project_collection.find_one({
