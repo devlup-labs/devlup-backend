@@ -13,7 +13,7 @@ main_app = FastAPI(redirect_slashes=True)
 
 main_app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex="http?://.*",
+    allow_origin_regex=r"^https?://.*$",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
